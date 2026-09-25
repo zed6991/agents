@@ -25,6 +25,14 @@ test('landing, legal pages and health check render', async () => {
   assert.equal((await c.get('/nope')).status, 404);
 });
 
+test('landing page can show Weekship’s own changelog widget', async () => {
+  await srv.close();
+  srv = await startTestServer({ env: { SELF_CHANGELOG_SLUG: 'weekship-news' } });
+  const home = await client(srv.base).get('/');
+  assert.match(home.text, /<script src="\/widget.js" data-project="weekship-news" async><\/script>/);
+  assert.match(home.text, /href="\/c\/weekship-news">Changelog/);
+});
+
 test('sign up, log out, log in', async () => {
   const c = await signUp(srv.base);
   assert.ok(c.cookie.startsWith('ws_session='));
@@ -337,6 +345,14 @@ test('account deletion removes all data', async () => {
   for (const table of ['users', 'projects', 'entries', 'sessions']) {
     assert.equal(srv.db.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get().n, 0, table);
   }
+});
+
+test('the dashboard confirms where the widget is installed', async () => {
+  const c = await signUp(srv.base);
+  await createProject(c);
+  assert.match((await c.get('/app/p/acme')).text, /Not detected yet/);
+  await fetch(`${srv.base}/api/v1/p/acme/entries`, { headers: { origin: 'https://customer-app.test' } });
+  assert.match((await c.get('/app/p/acme')).text, /Widget last seen on <strong>customer-app.test<\/strong>/);
 });
 
 test('widget script is served with cross-origin headers', async () => {

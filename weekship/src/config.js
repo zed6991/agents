@@ -25,6 +25,8 @@ function loadConfig(env = process.env) {
     databasePath: env.DATABASE_PATH || './data/weekship.db',
     priceMonthlyLabel: env.PRICE_MONTHLY_LABEL || '9',
     priceYearlyLabel: env.PRICE_YEARLY_LABEL || '90',
+    // Slug of Weekship's own changelog project, shown on the landing page.
+    selfChangelogSlug: env.SELF_CHANGELOG_SLUG || '',
     supportEmail: env.SUPPORT_EMAIL || 'support@example.com',
     stripe: {
       secretKey: stripeSecretKey,

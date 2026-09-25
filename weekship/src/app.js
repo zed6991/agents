@@ -11,7 +11,7 @@ const { createBilling } = require('./billing');
 const { createMailer } = require('./mailer');
 const { escapeHtml } = require('./html');
 
-const RESERVED_SLUGS = new Set(['app', 'api', 'admin', 'login', 'signup', 'logout', 'billing', 'static', 'www', 'new', 'help', 'support', 'weekship']);
+const RESERVED_SLUGS = new Set(['app', 'api', 'admin', 'login', 'signup', 'logout', 'billing', 'static', 'www', 'new', 'help', 'support']);
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TAGS = new Set(['new', 'improved', 'fixed']);
@@ -44,6 +44,7 @@ function createApp({ db, config, stripe = null, mailer = null, log = console }) 
     priceMonthlyLabel: config.priceMonthlyLabel,
     priceYearlyLabel: config.priceYearlyLabel,
     hasYearly: Boolean(config.stripe.priceYearly),
+    selfChangelogSlug: config.selfChangelogSlug,
   };
 
   // ---------- Queries ----------
@@ -67,6 +68,9 @@ function createApp({ db, config, stripe = null, mailer = null, log = console }) 
     insertProject: db.prepare('INSERT INTO projects (user_id, name, slug, accent, created_at) VALUES (?, ?, ?, ?, ?)'),
     updateProject: db.prepare('UPDATE projects SET name = ?, website_url = ?, accent = ? WHERE id = ?'),
     deleteProject: db.prepare('DELETE FROM projects WHERE id = ?'),
+    // Written at most once an hour per project, to keep widget reads cheap.
+    markWidgetSeen: db.prepare(`UPDATE projects SET widget_origin = ?, widget_seen_at = ?
+      WHERE id = ? AND (widget_seen_at IS NULL OR widget_seen_at < ? OR widget_origin IS NOT ?)`),
     entriesForProject: db.prepare(`SELECT * FROM entries WHERE project_id = ?
       ORDER BY CASE status WHEN 'draft' THEN 0 ELSE 1 END, COALESCE(published_at, updated_at) DESC, id DESC`),
     publishedEntries: db.prepare(`SELECT * FROM entries WHERE project_id = ? AND status = 'published'
@@ -539,6 +543,12 @@ ${items}
     res.set({ 'Access-Control-Allow-Origin': '*', 'Cross-Origin-Resource-Policy': 'cross-origin', 'Cache-Control': 'public, max-age=60' });
     const project = q.publicProject.get(req.params.slug);
     if (!project) return res.status(404).json({ error: 'not_found' });
+    // Remember where the widget runs, so the dashboard can confirm the install.
+    const origin = req.get('origin');
+    if (origin && origin !== baseOrigin && /^https?:\/\/[^/\s]{1,200}$/.test(origin)) {
+      const now = Date.now();
+      q.markWidgetSeen.run(origin, now, project.id, now - 60 * 60 * 1000, origin);
+    }
     const limit = Math.min(Math.max(Number(req.query.limit) || 10, 1), 50);
     const entries = q.publishedEntries.all(project.id, limit).map((e) => ({
       id: e.id,

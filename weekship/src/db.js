@@ -63,6 +63,10 @@ const MIGRATIONS = [
     received_at INTEGER NOT NULL
   );
   `,
+  `
+  ALTER TABLE projects ADD COLUMN widget_origin TEXT;
+  ALTER TABLE projects ADD COLUMN widget_seen_at INTEGER;
+  `,
 ];
 
 function openDatabase(file) {

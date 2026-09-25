@@ -30,7 +30,7 @@ ${head || ''}
       ${user
         ? html`<a href="/app">Projects</a><a href="/app/billing">Billing</a>
           <form method="post" action="/logout"><input type="hidden" name="_csrf" value="${csrf}"><button class="linklike" type="submit">Log out</button></form>`
-        : html`<a href="/#pricing">Pricing</a><a href="/login">Log in</a><a class="btn btn-small" href="/signup">Start free</a>`}
+        : html`<a href="/#pricing">Pricing</a>${app.selfChangelogSlug ? html`<a href="/c/${app.selfChangelogSlug}">Changelog</a>` : ''}<a href="/login">Log in</a><a class="btn btn-small" href="/signup">Start free</a>`}
     </nav>
   </div>
 </header>
@@ -44,6 +44,7 @@ ${body}
   </div>
 </footer>
 <script src="/app.js" defer></script>
+${app.selfChangelogSlug && !user ? html`<script src="/widget.js" data-project="${app.selfChangelogSlug}" async></script>` : ''}
 </body>
 </html>`;
 }
@@ -301,6 +302,9 @@ function projectPage(ctx, { project, entries, notice, error }) {
       <h2>Add the widget to your app</h2>
       <p class="muted small">Paste this before <code>&lt;/body&gt;</code>. A “What’s new” button appears in the bottom-right corner. To use your own button instead, give any element the attribute <code>data-weekship</code>.</p>
       <pre data-copy-source id="snippet">${embedSnippet(app, project)}</pre>
+      <p class="small ${project.widget_seen_at ? '' : 'muted'}">${project.widget_seen_at
+        ? html`✓ Widget last seen on <strong>${project.widget_origin.replace(/^https?:\/\//, '')}</strong>, ${formatDate(project.widget_seen_at)}.`
+        : 'Not detected yet. Once the snippet is live, this shows where it runs.'}</p>
       <div class="form-actions"><button class="btn btn-small btn-secondary" type="button" data-copy="#snippet">Copy snippet</button></div>
     </div>
     <form class="card" method="post" action="/app/p/${project.slug}/settings">
