@@ -53,8 +53,14 @@ function truncateToWeight(text, budget) {
   return result.replace(/[\s.,;:!?→-]+$/u, '') + '…';
 }
 
+// Body text for X: one line per paragraph or list item, and no inline link
+// URLs, since each would cost 23 characters and steal the link preview.
 function summaryOf(body) {
-  return toPlainText(body).replace(/\s*\n+\s*/g, ' ').trim();
+  return toPlainText(body, { links: false })
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join('\n');
 }
 
 function xPost({ entry, url, hashtag = '#buildinpublic' }) {

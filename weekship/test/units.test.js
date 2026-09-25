@@ -73,6 +73,14 @@ test('X post always fits in 280 and includes the link', () => {
   assert.ok(!xPost({ entry: cases[2], url }).includes('#buildinpublic'), 'hashtag dropped when the body is cut');
 });
 
+test('X post keeps list lines and drops inline link URLs', () => {
+  const post = xPost({
+    entry: { title: 'Export', body: 'Intro with [a link](https://example.com/x).\n\n- one\n- two', tag: 'new' },
+    url: 'https://x.test/c/acme/1',
+  });
+  assert.equal(post, '✨ Export\n\nIntro with a link.\n→ one\n→ two\n\nhttps://x.test/c/acme/1\n\n#buildinpublic');
+});
+
 test('LinkedIn post has intro, plain body and link', () => {
   const post = linkedinPost({
     entry: { title: 'CSV export', body: '**Fast** export\n- filters work', tag: 'new' },

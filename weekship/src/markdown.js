@@ -62,11 +62,12 @@ function renderMarkdown(source) {
 }
 
 // Plain text for social posts and feeds: markdown syntax removed.
-function toPlainText(source) {
+// With { links: false } a [label](url) keeps only its label.
+function toPlainText(source, { links = true } = {}) {
   return String(source || '')
     .replace(/\r\n?/g, '\n')
     .replace(/`([^`]+)`/g, '$1')
-    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '$1 ($2)')
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, links ? '$1 ($2)' : '$1')
     .replace(/\*\*([^*]+)\*\*/g, '$1')
     .replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?!\w)/g, '$1$2')
     .replace(/^\s*[-*]\s+/gm, '→ ')

@@ -58,6 +58,7 @@ pre { background: var(--bg-soft); border: 1px solid var(--border); border-radius
 .nav { display: flex; align-items: center; gap: 18px; font-size: 15px; }
 .nav a { color: var(--muted); text-decoration: none; }
 .nav a:hover { color: var(--text); }
+.nav a.btn, .nav a.btn:hover { color: var(--accent-text); }
 .nav form { margin: 0; }
 
 /* Buttons and forms */
@@ -84,6 +85,7 @@ textarea { min-height: 180px; resize: vertical; line-height: 1.5; }
 
 .card { border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; background: var(--bg); }
 .card + .card { margin-top: 18px; }
+.grid-2 > .card, .features > .card, .pricing > .card { margin-top: 0; }
 .card h2 { margin-top: 0; font-size: 18px; }
 .muted { color: var(--muted); }
 .small { font-size: 14px; }
@@ -175,3 +177,4 @@ main { padding-bottom: 70px; }
 @media (max-width: 640px) { .cl-entry { grid-template-columns: 1fr; gap: 4px; } }
 .badge-powered { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); text-decoration: none; border: 1px solid var(--border); padding: 5px 10px; border-radius: 999px; }
 .empty { text-align: center; color: var(--muted); padding: 50px 0; border: 1px dashed var(--border); border-radius: var(--radius); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }

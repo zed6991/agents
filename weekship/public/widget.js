@@ -63,7 +63,7 @@
       ':host{all:initial}',
       '*{box-sizing:border-box}',
       '.ws{--accent:' + accent + ';font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#111827}',
-      '.launcher{position:fixed;right:20px;bottom:20px;z-index:2147483000;display:flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:10px 16px;font:600 14px/1 inherit;font-family:inherit;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.18)}',
+      '.launcher{position:fixed;right:20px;bottom:20px;z-index:2147483000;display:flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:10px 16px;font-family:inherit;font-size:14px;font-weight:600;line-height:1;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.18)}',
       '.launcher:focus-visible,.close:focus-visible{outline:3px solid rgba(0,0,0,.35);outline-offset:2px}',
       '.dot{width:9px;height:9px;border-radius:50%;background:#f04438;box-shadow:0 0 0 2px #fff}',
       '.panel{position:fixed;right:20px;bottom:74px;z-index:2147483001;width:min(380px,calc(100vw - 32px));max-height:min(70vh,560px);display:flex;flex-direction:column;background:#fff;border:1px solid #e3e6eb;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.2);overflow:hidden}',
