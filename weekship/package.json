@@ -1,0 +1,22 @@
+{
+  "name": "weekship",
+  "version": "1.0.0",
+  "description": "Hosted changelog, in-app What's new widget and X/LinkedIn post drafts from one update.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch --env-file-if-exists=.env src/server.js",
+    "test": "node --test test/*.test.js",
+    "check": "for f in src/*.js public/*.js; do node --check \"$f\" || exit 1; done"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "express": "^4.22.3",
+    "stripe": "^22.6.2"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  }
+}
