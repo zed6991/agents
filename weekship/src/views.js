@@ -251,7 +251,7 @@ function dashboardPage(ctx, { projects, error, canCreate, form = {} }) {
   ${projects.length
     ? html`<ul class="list" style="margin-bottom:22px">${projects.map(
         (p) => html`<li>
-          <div><a class="title" href="/app/p/${p.slug}">${p.name}</a><div class="muted small">${p.published_count} published · ${p.draft_count} drafts</div></div>
+          <div><a class="title" href="/app/p/${p.slug}">${p.name}</a><div class="muted small">${p.published_count} published · ${p.draft_count} ${p.draft_count === 1 ? 'draft' : 'drafts'}</div></div>
           <div class="actions"><a class="btn btn-small btn-secondary" href="/c/${p.slug}" target="_blank" rel="noopener">View changelog ↗</a><a class="btn btn-small" href="/app/p/${p.slug}/entries/new">New update</a></div>
         </li>`
       )}</ul>`
